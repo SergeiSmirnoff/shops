@@ -21,7 +21,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
                 fatalError()
         }
         let navigationController = UINavigationController(rootViewController: shopManagerVC)
-        navigationController.isNavigationBarHidden = true
+       // navigationController.isNavigationBarHidden = true
         window?.rootViewController = navigationController
         window?.makeKeyAndVisible()
         return true

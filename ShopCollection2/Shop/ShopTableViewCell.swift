@@ -9,10 +9,12 @@
 import UIKit
 
 class ShopTableViewCell: UITableViewCell {
-    @IBOutlet var name:UILabel!
-    @IBOutlet var details:UILabel!
-    @IBOutlet var photo:UIImageView!
+    @IBOutlet var name: UILabel!
+    @IBOutlet var details: UILabel!
+    @IBOutlet var photo: UIImageView!
     
+    
+    var indexPath: IndexPath?
     
     override func awakeFromNib() {
         super.awakeFromNib()
@@ -24,5 +26,7 @@ class ShopTableViewCell: UITableViewCell {
 
         // Configure the view for the selected state
     }
-    
+    @IBAction func addItem() {
+        
+}
 }

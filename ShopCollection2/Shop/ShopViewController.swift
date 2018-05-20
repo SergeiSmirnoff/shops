@@ -7,20 +7,22 @@
 //
 
 import UIKit
+import RealmSwift
 
 class ShopViewController: UIViewController {
     @IBOutlet var tableView:UITableView!
-    @IBAction func closeVC() {
-        let alertVC = UIAlertController(title: "Back", message: "ARE YOU SHURE?", preferredStyle: .actionSheet)
-        let alertAction1 = UIAlertAction(title: "NO", style: .cancel, handler: nil)
-        let alertAction2 = UIAlertAction(title: "YES", style: .default) { _ in
-            self.dismiss(animated: true, completion: nil)
+
+    var theChosenShop: Shop?
+    
+    
+    @IBAction func showBasket() {
+        guard let nibs = Bundle.main.loadNibNamed("BasketViewController", owner: nil, options: nil),
+            let basketVC = nibs[0] as?  BasketViewController else {
+                fatalError()
         }
-        alertVC.addAction(alertAction1)
-        alertVC.addAction(alertAction2)
-        present(alertVC, animated: true, completion: nil)
-    }
-    var theChosenShop:shop?
+        navigationController?.pushViewController(basketVC, animated: true)
+    }    
+        
     
     
     private func registerCell () {
@@ -29,11 +31,17 @@ class ShopViewController: UIViewController {
     }
     override func viewDidLoad() {
         super.viewDidLoad()
-registerCell()
+        registerCell()
+        
+        
     }
     
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        
+    }
     
-    
+   
 }
 
 
@@ -47,19 +55,47 @@ extension ShopViewController: UITableViewDataSource {
             indexPath) as! ShopTableViewCell
         cell.name.text = theChosenShop?.goods[indexPath.row].itemName
         cell.details.text = theChosenShop?.goods[indexPath.row].itemDescription
-        
+        if let id = theChosenShop?.goods[indexPath.row].itemId {
+            cell.photo.image = UIImage(named:"\(id)")
+        }
+        cell.indexPath = indexPath
         return cell
         
     }
-
+    
 }
 
-extension ShopsViewController: UITabBarDelegate {
-  
+extension ShopViewController: UITableViewDelegate {
+   
+    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         
-        
-
+        tableView.deselectRow(at: indexPath, animated: true)
+        guard let item = theChosenShop?.goods[indexPath.row] else {
+            return
+        }
+        print(item)
+        addItem(item: item)
+    }
+    func addItem(item:ShopItem) {
+        do {
+            // Realm.Configuration.defaultConfiguration = Realm.Configuration(deleteRealmIfMigrationNeeded:true)
+            let realm = try Realm()
+            realm.beginWrite()
+            realm.add(item)
+                try realm.commitWrite()
+                print(realm.configuration.fileURL)
+        }
+        catch{
+            print ("error")
+        }
+    }
+    
 }
+    
+        
+        
+    
+
 
 
    
